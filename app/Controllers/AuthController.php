@@ -20,8 +20,8 @@
             ob_start();
             $input = (array) json_decode(file_get_contents("php://input"), true);
 
-            $usuario = $input["usuario"];
-            $dataUser = $this->users->login($usuario, $input["password"]);
+            $usuario = $input["usuario"] ?? null;
+            $dataUser = $this->users->login($usuario, $input["password"] ?? null);
 
             if ($dataUser) {
                 $issuerClaim = "localhost"; // this can be the servername
@@ -40,15 +40,15 @@
                     ]
                 ];
 
-                $jwt = JWT::encode($token, KEY, 'HS256');
+                $jwt = JWT::encode($token, KEY, "HS256");
                 $res = json_encode([
                     "message" => "Successful login.",
-                    "jwt" => $jwt,
+                    "token" => $jwt,
                     "user" => $usuario,
                     "expireAt" => $expireClaim
                 ]);
 
-                $response["status_code_header"] = "HTTP/1.1 201 OK";
+                $response["status_code_header"] = "HTTP/1.1 201 Created";
                 $response["body"] = $res;
             } else {
                 $response["status_code_header"] = "HTTP/1.1 401 Unauthorized";

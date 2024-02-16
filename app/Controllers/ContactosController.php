@@ -39,9 +39,7 @@
                     $response = $this->notFoundResponse();
                     break;
             }
-            ob_start();
             header($response["status_code_header"]);
-            ob_end_flush();
 
             if ($response["body"]) {
                 echo $response["body"];
