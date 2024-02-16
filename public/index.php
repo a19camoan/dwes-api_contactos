@@ -17,7 +17,7 @@
 
     require_once "../bootstrap.php";
 
-    header('Access-Control-Allow-Origin: *');
+    header("Access-Control-Allow-Origin: *");
     header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
     header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
     header("Allow: GET, POST, OPTIONS, PUT, DELETE");
@@ -41,17 +41,24 @@
     # Se ha creado correctamente el authcontroller. Autentificación OK.
 
 
-    $input = (array) json_decode(file_get_contents('php://input'), true);
+    $input = (array) json_decode(file_get_contents("php://input"), true);
 
     # Recuperamos el token
-    $authHeader = $_SERVER["HTTP_AUTHORIZATION"];
-    $arr = explode(" ", $authHeader);
-    $jwt = $arr[1] ?? null;
-
+    if (!isset($_SERVER["HTTP_AUTHORIZATION"])) {
+        echo json_encode([
+            "message" => "Access denied.",
+            "error" => "Token not found"
+        ]);
+        exit(http_response_code(401));
+    } else {
+        $authHeader = $_SERVER["HTTP_AUTHORIZATION"];
+        $arr = explode(" ", $authHeader);
+        $jwt = $arr[1] ?? null;
+    }
     
     if ($jwt) {
         try {
-            $decoded = (JWT::decode($jwt, new Key(KEY, 'HS256')));
+            $decoded = (JWT::decode($jwt, new Key(KEY, "HS256")));
         } catch (Exception $e) {
             echo json_encode([
                 "message" => "Access denied.",
