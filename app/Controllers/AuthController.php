@@ -17,7 +17,6 @@
 
         public function loginFromRequest()
         {
-            ob_start();
             $input = (array) json_decode(file_get_contents("php://input"), true);
 
             $usuario = $input["usuario"] ?? null;
