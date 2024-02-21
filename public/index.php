@@ -18,10 +18,15 @@
     require_once "../bootstrap.php";
 
     header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, " .
+    header("Access-Control-Allow-Origin: http://localhost:3000");
+    header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Authorization, " .
         "Access-Control-Request-Method");
     header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
     header("Allow: GET, POST, OPTIONS, PUT, DELETE");
+    header("Access-Control-Allow-Credentials: true");
+    if ($_SERVER["REQUEST_METHOD"] == "OPTIONS") {
+        die();
+    }
 
     $requestMethod = $_SERVER["REQUEST_METHOD"];
     $request = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
